@@ -1,0 +1,26 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: dep-mainui
+  annotations:
+    kubernetes.io/change-cause: httpd:2.6
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: apache
+      app: main
+      rel: stable
+  template:
+    metadata:
+      labels:
+        name: apache
+        app: main
+        rel: stable
+    spec:
+      containers:
+      - name: dep-mainui-container
+        image: httpd:2.6
+        ports:
+        - containerPort: 80
+    

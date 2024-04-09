@@ -1,0 +1,45 @@
+---
+kind: Deployment
+apiVersion: v1
+metadata:
+  name: nfs-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      role: web-fronted
+  template:
+    metadata:
+      name: nfs-web-pod
+      labels:
+        role: web-fronted
+    spec:
+      containers:
+      - name: nfs-web-container
+        image: nginx:1.14
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: nfs
+            mountPath: /usr/share/nginx/html
+
+      volumes:
+      - name: nfs
+        nfs: 
+          server: nfs-server
+          path: "/exports"
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nfs-web
+sepc:
+  # type: ClusterIP
+  # clusterIP: 10.233.10.20
+  selector:
+    role: web-fronted
+  ports:
+    - name: web-port
+      port: 80
+      targetPort: 80
